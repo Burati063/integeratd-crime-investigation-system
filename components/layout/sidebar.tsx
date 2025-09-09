@@ -19,7 +19,7 @@ import {
   Menu,
   X,
 } from "lucide-react"
-
+import Image from "next/image"
 interface SidebarProps {
   userRole: string
 }
@@ -102,16 +102,30 @@ export function Sidebar({ userRole }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        {/* Header */}
-        <div className="p-6 border-b border-slate-700">
-          <div className="flex items-center space-x-3">
-            
-            <div>
-              <h2 className="font-semibold text-sm">Ethiopia Federal Police</h2>
-              <p className="text-xs text-slate-400">Crime Investigation</p>
-            </div>
-          </div>
-        </div>
+      <div className="p-6 border-b border-slate-700">
+  <div className="flex items-center space-x-3">
+    {/* Image wrapper */}
+    <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
+      <Image
+        src="/images/i.png"
+        alt="Ethiopia Federal Police Logo"
+        fill
+        className="object-contain"
+        sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+        priority
+      />
+    </div>
+
+    <div>
+      <h2 className="font-semibold text-sm sm:text-base md:text-lg">
+        Ethiopia Federal Police
+      </h2>
+      <p className="text-xs sm:text-sm text-slate-400">
+        Crime Investigation
+      </p>
+    </div>
+  </div>
+</div>
 
         {/* Navigation */}
         <nav className="flex-1 p-4">
