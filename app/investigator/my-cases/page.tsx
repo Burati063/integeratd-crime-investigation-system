@@ -1,7 +1,7 @@
 "use client"
 
+import MyCases from "@/components/investigator/my-cases"
 import { Sidebar } from "@/components/layout/sidebar"
-import { MyCases } from "@/components/investigator/my-cases"
 
 export default function MyCasesPage() {
   return (

@@ -54,7 +54,7 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
  {/* Logo Section */}
  <div className="flex justify-center mb-6">
           <div className="rounded-full">
-            <div className="w-16 h-16 relative">
+            <div className="w-20 h-20 relative">
             <Image
                 src="/images/i.png" 
                 alt="Ethiopia Federal Police Logo"
