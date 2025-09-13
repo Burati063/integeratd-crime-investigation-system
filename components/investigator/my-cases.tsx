@@ -27,7 +27,9 @@ import {
   Edit,
   Trash2,
   Save,
-  X
+  X,
+  Maximize2,
+  Minimize2
 } from "lucide-react"
 
 interface Person {
@@ -88,13 +90,13 @@ export default function MyCases() {
   const [selectedCase, setSelectedCase] = useState<Case | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [currentTab, setCurrentTab] = useState("person")
+  const [isFullScreen, setIsFullScreen] = useState(false)
 
   // Person form state
   const [personForm, setPersonForm] = useState({
     type: '',
     fullName: '',
     dateOfBirth: '',
-  
     age: 0,
     gender: '',
     nationality: '',
@@ -461,19 +463,29 @@ export default function MyCases() {
         ))}
       </div>
 
-{/* Case Detail Dialog */}
+      {/* Case Detail Dialog - Full Screen */}
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto p-0">
+        <DialogContent className={`${isFullScreen ? 'w-screen h-screen max-w-none max-h-none rounded-none' : 'max-w-[95vw] w-full max-h-[95vh]'} overflow-y-auto p-0`}>
           <DialogHeader className="px-6 py-4 border-b bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
-            <DialogTitle className="flex items-center gap-3 text-xl">
-              <FileText className="h-6 w-6" />
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <span>Case Registration System</span>
-                <span className="text-slate-200 text-sm font-normal">
-                  {selectedCase?.title}
-                </span>
-              </div>
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-3 text-xl">
+                <FileText className="h-6 w-6" />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <span>Case Registration System</span>
+                  <span className="text-slate-200 text-sm font-normal">
+                    {selectedCase?.title}
+                  </span>
+                </div>
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/20"
+                onClick={() => setIsFullScreen(!isFullScreen)}
+              >
+                {isFullScreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              </Button>
+            </div>
           </DialogHeader>
 
           {selectedCase && (
@@ -599,20 +611,24 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <Select value={personForm.type} onValueChange={(value) => handlePersonFormChange('type', value)}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select Person Type *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="witness">👁️ Witness</SelectItem>
-                              <SelectItem value="accuser">✓ Accuser</SelectItem>
-                              <SelectItem value="accused">⚠️ Accused</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <div className="sm:col-span-1 lg:col-span-3">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Person Type *</label>
+                            <Select value={personForm.type} onValueChange={(value) => handlePersonFormChange('type', value)}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select Person Type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="witness">👁️ Witness</SelectItem>
+                                <SelectItem value="accuser">✓ Accuser</SelectItem>
+                                <SelectItem value="accused">⚠️ Accused</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="sm:col-span-1 lg:col-span-3 space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Full Name *</label>
                             <Input
                               className="h-12"
-                              placeholder="Enter full name *"
+                              placeholder="Enter full name"
                               value={personForm.fullName}
                               onChange={(e) => handlePersonFormChange('fullName', e.target.value)}
                             />
@@ -620,33 +636,44 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <Input
-                            className="h-12"
-                            type="date"
-                            value={personForm.dateOfBirth}
-                            onChange={(e) => handlePersonFormChange('dateOfBirth', e.target.value)}
-                          />
-                          <Input
-                            className="h-12 bg-gray-50"
-                            placeholder="Age (auto-calculated)"
-                            value={personForm.age || ''}
-                            readOnly
-                          />
-                          <Select value={personForm.gender} onValueChange={(value) => handlePersonFormChange('gender', value)}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select Gender *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Male">Male</SelectItem>
-                              <SelectItem value="Female">Female</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Input
-                            className="h-12"
-                            placeholder="Enter nationality *"
-                            value={personForm.nationality}
-                            onChange={(e) => handlePersonFormChange('nationality', e.target.value)}
-                          />
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Date of Birth</label>
+                            <Input
+                              className="h-12"
+                              type="date"
+                              value={personForm.dateOfBirth}
+                              onChange={(e) => handlePersonFormChange('dateOfBirth', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Age (auto-calculated)</label>
+                            <Input
+                              className="h-12 bg-gray-50"
+                              value={personForm.age || ''}
+                              readOnly
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Gender *</label>
+                            <Select value={personForm.gender} onValueChange={(value) => handlePersonFormChange('gender', value)}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select Gender" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Male">Male</SelectItem>
+                                <SelectItem value="Female">Female</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Nationality *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter nationality"
+                              value={personForm.nationality}
+                              onChange={(e) => handlePersonFormChange('nationality', e.target.value)}
+                            />
+                          </div>
                         </div>
                       </div>
 
@@ -658,16 +685,20 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <Input
-                            className="h-12"
-                            placeholder="House Number"
-                            value={personForm.houseNumber}
-                            onChange={(e) => handlePersonFormChange('houseNumber', e.target.value)}
-                          />
-                          <div className="sm:col-span-1 lg:col-span-3">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">House Number</label>
                             <Input
                               className="h-12"
-                              placeholder="Enter address *"
+                              placeholder="House Number"
+                              value={personForm.houseNumber}
+                              onChange={(e) => handlePersonFormChange('houseNumber', e.target.value)}
+                            />
+                          </div>
+                          <div className="sm:col-span-1 lg:col-span-3 space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Address *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter address"
                               value={personForm.address}
                               onChange={(e) => handlePersonFormChange('address', e.target.value)}
                             />
@@ -675,30 +706,42 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <Input
-                            className="h-12"
-                            placeholder="Enter region *"
-                            value={personForm.region}
-                            onChange={(e) => handlePersonFormChange('region', e.target.value)}
-                          />
-                          <Input
-                            className="h-12"
-                            placeholder="Enter nation *"
-                            value={personForm.nation}
-                            onChange={(e) => handlePersonFormChange('nation', e.target.value)}
-                          />
-                          <Input
-                            className="h-12"
-                            placeholder="Enter woreda *"
-                            value={personForm.woreda}
-                            onChange={(e) => handlePersonFormChange('woreda', e.target.value)}
-                          />
-                          <Input
-                            className="h-12"
-                            placeholder="Enter kebele *"
-                            value={personForm.kebele}
-                            onChange={(e) => handlePersonFormChange('kebele', e.target.value)}
-                          />
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Region *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter region"
+                              value={personForm.region}
+                              onChange={(e) => handlePersonFormChange('region', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Nation *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter nation"
+                              value={personForm.nation}
+                              onChange={(e) => handlePersonFormChange('nation', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Woreda *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter woreda"
+                              value={personForm.woreda}
+                              onChange={(e) => handlePersonFormChange('woreda', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Kebele *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter kebele"
+                              value={personForm.kebele}
+                              onChange={(e) => handlePersonFormChange('kebele', e.target.value)}
+                            />
+                          </div>
                         </div>
                       </div>
 
@@ -710,71 +753,92 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <Input
-                            className="h-12"
-                            placeholder="Resident ID Number *"
-                            value={personForm.residentId}
-                            onChange={(e) => handlePersonFormChange('residentId', e.target.value)}
-                          />
-                          <Select value={personForm.maritalStatus} onValueChange={(value) => handlePersonFormChange('maritalStatus', value)}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select Marital Status *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Single">Single</SelectItem>
-                              <SelectItem value="Married">Married</SelectItem>
-                              <SelectItem value="Divorced">Divorced</SelectItem>
-                              <SelectItem value="Widowed">Widowed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Select value={personForm.educationStatus} onValueChange={(value) => handlePersonFormChange('educationStatus', value)}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select Education Status *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="No Formal Education">No Formal Education</SelectItem>
-                              <SelectItem value="Primary School">Primary School</SelectItem>
-                              <SelectItem value="Secondary School">Secondary School</SelectItem>
-                              <SelectItem value="Diploma">Diploma</SelectItem>
-                              <SelectItem value="Bachelor's Degree">Bachelor's Degree</SelectItem>
-                              <SelectItem value="Master's Degree">Master's Degree</SelectItem>
-                              <SelectItem value="Doctorate">Doctorate</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Resident ID Number *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Resident ID Number"
+                              value={personForm.residentId}
+                              onChange={(e) => handlePersonFormChange('residentId', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Marital Status *</label>
+                            <Select value={personForm.maritalStatus} onValueChange={(value) => handlePersonFormChange('maritalStatus', value)}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select Marital Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Single">Single</SelectItem>
+                                <SelectItem value="Married">Married</SelectItem>
+                                <SelectItem value="Divorced">Divorced</SelectItem>
+                                <SelectItem value="Widowed">Widowed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Education Status *</label>
+                            <Select value={personForm.educationStatus} onValueChange={(value) => handlePersonFormChange('educationStatus', value)}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select Education Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="No Formal Education">No Formal Education</SelectItem>
+                                <SelectItem value="Primary School">Primary School</SelectItem>
+                                <SelectItem value="Secondary School">Secondary School</SelectItem>
+                                <SelectItem value="Diploma">Diploma</SelectItem>
+                                <SelectItem value="Bachelor's Degree">Bachelor's Degree</SelectItem>
+                                <SelectItem value="Master's Degree">Master's Degree</SelectItem>
+                                <SelectItem value="Doctorate">Doctorate</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-                          <Select value={personForm.workStatus} onValueChange={(value) => handlePersonFormChange('workStatus', value)}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select Work Status *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Employed">Employed</SelectItem>
-                              <SelectItem value="Unemployed">Unemployed</SelectItem>
-                              <SelectItem value="Student">Student</SelectItem>
-                              <SelectItem value="Retired">Retired</SelectItem>
-                              <SelectItem value="Self-Employed">Self-Employed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Input
-                            className="h-12"
-                            placeholder="Phone Number *"
-                            value={personForm.phoneNumber}
-                            onChange={(e) => handlePersonFormChange('phoneNumber', e.target.value)}
-                          />
-                          <Input
-                            className="h-12"
-                            placeholder="Latitude"
-                            value={personForm.latitude}
-                            onChange={(e) => handlePersonFormChange('latitude', e.target.value)}
-                          />
-                          <Input
-                            className="h-12"
-                            placeholder="Longitude"
-                            value={personForm.longitude}
-                            onChange={(e) => handlePersonFormChange('longitude', e.target.value)}
-                          />
-                          <div className="sm:col-span-2 lg:col-span-2">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Work Status *</label>
+                            <Select value={personForm.workStatus} onValueChange={(value) => handlePersonFormChange('workStatus', value)}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select Work Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Employed">Employed</SelectItem>
+                                <SelectItem value="Unemployed">Unemployed</SelectItem>
+                                <SelectItem value="Student">Student</SelectItem>
+                                <SelectItem value="Retired">Retired</SelectItem>
+                                <SelectItem value="Self-Employed">Self-Employed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Phone Number *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Phone Number"
+                              value={personForm.phoneNumber}
+                              onChange={(e) => handlePersonFormChange('phoneNumber', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Latitude</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Latitude"
+                              value={personForm.latitude}
+                              onChange={(e) => handlePersonFormChange('latitude', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Longitude</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Longitude"
+                              value={personForm.longitude}
+                              onChange={(e) => handlePersonFormChange('longitude', e.target.value)}
+                            />
+                          </div>
+                          <div className="sm:col-span-2 lg:col-span-2 flex items-end space-y-2">
                             <Button 
                               onClick={handleAddPerson}
                               className="w-full h-12 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white shadow-lg transition-all duration-200"
@@ -904,67 +968,82 @@ export default function MyCases() {
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <Select 
-                            value={exhibitForm.personId} 
-                            onValueChange={(value) => setExhibitForm(prev => ({ ...prev, personId: value }))}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select related person *" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {selectedCase.persons?.map((person) => (
-                                <SelectItem key={person.id} value={person.id}>
-                                  <div className="flex items-center gap-2">
-                                    <Badge className={`${getPersonTypeColor(person.type)} text-xs`}>
-                                      {person.type.charAt(0).toUpperCase() + person.type.slice(1)}
-                                    </Badge>
-                                    {person.fullName}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Input
-                            className="h-12"
-                            placeholder="Enter exhibit name *"
-                            value={exhibitForm.name}
-                            onChange={(e) => setExhibitForm(prev => ({ ...prev, name: e.target.value }))}
-                          />
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Related Person *</label>
+                            <Select 
+                              value={exhibitForm.personId} 
+                              onValueChange={(value) => setExhibitForm(prev => ({ ...prev, personId: value }))}
+                            >
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select related person" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {selectedCase.persons?.map((person) => (
+                                  <SelectItem key={person.id} value={person.id}>
+                                    <div className="flex items-center gap-2">
+                                      <Badge className={`${getPersonTypeColor(person.type)} text-xs`}>
+                                        {person.type.charAt(0).toUpperCase() + person.type.slice(1)}
+                                      </Badge>
+                                      {person.fullName}
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Exhibit Name *</label>
+                            <Input
+                              className="h-12"
+                              placeholder="Enter exhibit name"
+                              value={exhibitForm.name}
+                              onChange={(e) => setExhibitForm(prev => ({ ...prev, name: e.target.value }))}
+                            />
+                          </div>
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-                          <div className="sm:col-span-2 lg:col-span-3">
+                          <div className="sm:col-span-2 lg:col-span-3 space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Description *</label>
                             <Textarea
                               rows={3}
-                              placeholder="Enter detailed exhibit description *"
+                              placeholder="Enter detailed exhibit description"
                               value={exhibitForm.description}
                               onChange={(e) => setExhibitForm(prev => ({ ...prev, description: e.target.value }))}
                               className="resize-none"
                             />
                           </div>
-                          <Input
-                            className="h-12"
-                            type="number"
-                            placeholder="Quantity *"
-                            min="1"
-                            value={exhibitForm.quantity}
-                            onChange={(e) => setExhibitForm(prev => ({ ...prev, quantity: parseInt(e.target.value) || 1 }))}
-                          />
-                          <Input
-                            className="h-12"
-                            type="date"
-                            value={exhibitForm.registeredDate}
-                            onChange={(e) => setExhibitForm(prev => ({ ...prev, registeredDate: e.target.value }))}
-                          />
-                          <Button 
-                            onClick={handleAddExhibit}
-                            className="h-12 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white shadow-lg transition-all duration-200"
-                            disabled={!exhibitForm.personId || !exhibitForm.name || !exhibitForm.description}
-                          >
-                            <Box className="h-4 w-4 mr-2" />
-                            <span className="hidden sm:inline">Add Exhibit</span>
-                            <span className="sm:hidden">Add</span>
-                          </Button>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Quantity *</label>
+                            <Input
+                              className="h-12"
+                              type="number"
+                              placeholder="Quantity"
+                              min="1"
+                              value={exhibitForm.quantity}
+                              onChange={(e) => setExhibitForm(prev => ({ ...prev, quantity: parseInt(e.target.value) || 1 }))}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-700">Registered Date</label>
+                            <Input
+                              className="h-12"
+                              type="date"
+                              value={exhibitForm.registeredDate}
+                              onChange={(e) => setExhibitForm(prev => ({ ...prev, registeredDate: e.target.value }))}
+                            />
+                          </div>
+                          <div className="flex items-end space-y-2">
+                            <Button 
+                              onClick={handleAddExhibit}
+                              className="h-12 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white shadow-lg transition-all duration-200"
+                              disabled={!exhibitForm.personId || !exhibitForm.name || !exhibitForm.description}
+                            >
+                              <Box className="h-4 w-4 mr-2" />
+                              <span className="hidden sm:inline">Add Exhibit</span>
+                              <span className="sm:hidden">Add</span>
+                            </Button>
+                          </div>
                         </div>
                       </div>
 
@@ -1042,7 +1121,10 @@ export default function MyCases() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    onClick={() => setIsDetailOpen(false)}
+                    onClick={() => {
+                      setIsDetailOpen(false)
+                      setIsFullScreen(false)
+                    }}
                     className="border-slate-300 hover:bg-slate-50 px-8 py-3"
                   >
                     <X className="h-5 w-5 mr-2" />
