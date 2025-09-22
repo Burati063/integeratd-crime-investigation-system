@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import { Globe } from "lucide-react"
-import { useLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/contexts/language-context"
 
 export function LanguageSwitcher() {
-  const { language, toggleLanguage } = useLanguage()
-
+  const { language, setLanguage, t } = useLanguage()
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "am" : "en")
+  }
   return (
     <Button
       variant="ghost"

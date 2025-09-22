@@ -10,15 +10,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/contexts/language-context"
 import { LanguageSwitcher } from "@/components/ui/language-switcher"
 import Image from "next/image"
+import Link from "next/link"
 
-interface LoginFormProps {
-  onToggleForm: () => void
-}
-
-export function LoginForm({ onToggleForm }: LoginFormProps) {
+export function LoginForm(){
   const [showPassword, setShowPassword] = useState(false)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -53,9 +50,9 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
         </div>
  {/* Logo Section */}
  <div className="flex justify-center mb-6">
-          <div className="rounded-full">
-            <div className="w-16 h-16 relative">
-            <Image
+          <div className="bg-white/10 p-2 rounded-full">
+            <div className="w-20 h-20 relative">
+              <Image
                 src="/images/i.png" 
                 alt="Ethiopia Federal Police Logo"
                 fill
@@ -65,20 +62,20 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
           </div>
         </div>
 
-        <h1 className="text-2xl font-semibold text-white mb-2">{t.auth.title}</h1>
-        <p className="text-lg text-slate-300">{t.auth.subtitle}</p>
+        <h1 className="text-2xl font-semibold text-white mb-2">{t("auth.title")}</h1>
+        <p className="text-lg text-slate-300">{t("auth.subtitle")}</p>
       </CardHeader>
 
       <CardContent className="space-y-6">
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username" className="text-white">
-              {t.auth.username}
+              {t("auth.username")}
             </Label>
             <Input
               id="username"
               type="text"
-              placeholder={t.auth.username}
+              placeholder={t("auth.username")}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="bg-white/90 border-slate-300 text-gray-900 placeholder:text-gray-500"
@@ -88,13 +85,13 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="password" className="text-white">
-              {t.auth.password}
+              {t("auth.password")}
             </Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder={t.auth.password}
+                placeholder={t("auth.password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-white/90 border-slate-300 text-gray-900 placeholder:text-gray-500 pr-10"
@@ -119,24 +116,26 @@ export function LoginForm({ onToggleForm }: LoginFormProps) {
                 className="border-slate-300 data-[state=checked]:bg-white data-[state=checked]:text-slate-800"
               />
               <Label htmlFor="remember" className="text-sm text-slate-300">
-                {t.auth.rememberMe}
+                {t("auth.rememberMe")}
               </Label>
             </div>
             <button type="button" className="text-sm text-slate-300 hover:text-white">
-              {t.auth.forgotPassword}
+              {t("auth.forgotPassword")}
             </button>
           </div>
 
           <Button type="submit" className="w-full bg-white hover:bg-slate-50 text-slate-800 font-semibold">
-            {t.auth.signIn}
+            {t("auth.signIn")}
           </Button>
         </form>
 
         <div className="text-center">
-          <span className="text-slate-300">{t.auth.dontHaveAccount.split("?")[0]}? </span>
-          <button onClick={onToggleForm} className="text-white hover:text-slate-300 font-semibold">
-            {t.common.signup}
-          </button>
+          <span className="text-slate-300">{t("auth.dontHaveAccount").split("?")[0]}?  </span>
+          <Link href="/auth/signup">
+            <button className="text-white hover:text-slate-300 font-semibold">
+            {t("common.signup")}
+            </button>
+          </Link>
         </div>
       </CardContent>
     </Card>

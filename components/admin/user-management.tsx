@@ -29,6 +29,7 @@ interface User {
   username: string
   email: string
   role: string
+  rank: string
   department: string
   isActive: boolean
   createdAt: string
@@ -43,6 +44,7 @@ export function UserManagement() {
       username: "admin",
       email: "admin@police.gov.et",
       role: "Admin",
+      rank: "Commissioner",
       department: "Administration",
       isActive: true,
       createdAt: "2024-01-15",
@@ -53,6 +55,7 @@ export function UserManagement() {
       username: "investigator",
       email: "jane@police.gov.et",
       role: "Investigator",
+      rank: "Inspector",
       department: "Major Crime Division",
       isActive: true,
       createdAt: "2024-01-20",
@@ -68,6 +71,7 @@ export function UserManagement() {
     username: "",
     email: "",
     role: "",
+    rank: "",
     department: "",
     password: "",
   })
@@ -77,10 +81,30 @@ export function UserManagement() {
     username: "",
     email: "",
     role: "",
+    rank: "",
     department: "",
   })
 
   const roles = ["Admin", "Pre-Investigation Unit", "Department Head", "Investigator", "Prosecutor"]
+
+  const ranks = [
+    "Constable",
+    "Assistant Sergeant",
+    "Deputy Sergeant",
+    "Sergeant",
+    "Chief Sergeant",
+    "Assistant Inspector",
+    "Deputy Inspector",
+    "Inspector",
+    "Chief Inspector",
+    "Deputy Commander",
+    "Commander",
+    "Assistant Commissioner",
+    "Deputy Commissioner",
+    "Commissioner",
+    "Deputy Commissioner General",
+    "Commissioner General"
+  ]
 
   const departments = [
     "Administration",
@@ -99,7 +123,7 @@ export function UserManagement() {
       createdAt: new Date().toISOString().split("T")[0],
     }
     setUsers([...users, user])
-    setNewUser({ fullName: "", username: "", email: "", role: "", department: "", password: "" })
+    setNewUser({ fullName: "", username: "", email: "", role: "", rank: "", department: "", password: "" })
     setIsCreateDialogOpen(false)
   }
 
@@ -110,6 +134,7 @@ export function UserManagement() {
       username: user.username,
       email: user.email,
       role: user.role,
+      rank: user.rank,
       department: user.department,
     })
     setIsEditDialogOpen(true)
@@ -140,7 +165,8 @@ export function UserManagement() {
     (user) =>
       user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.rank.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   return (
@@ -157,7 +183,7 @@ export function UserManagement() {
               {t.userManagement.createUser}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{t.userManagement.createNewUser}</DialogTitle>
             </DialogHeader>
@@ -197,6 +223,21 @@ export function UserManagement() {
                     {roles.map((role) => (
                       <SelectItem key={role} value={role}>
                         {role}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="rank">Rank</Label>
+                <Select onValueChange={(value) => setNewUser({ ...newUser, rank: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Rank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ranks.map((rank) => (
+                      <SelectItem key={rank} value={rank}>
+                        {rank}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -250,73 +291,81 @@ export function UserManagement() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t.userManagement.fullName}</TableHead>
-                <TableHead>{t.userManagement.username}</TableHead>
-                <TableHead>{t.userManagement.email}</TableHead>
-                <TableHead>{t.userManagement.role}</TableHead>
-                <TableHead>{t.userManagement.department}</TableHead>
-                <TableHead>{t.userManagement.status}</TableHead>
-                <TableHead>{t.userManagement.actions}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.fullName}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.department}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={user.isActive ? "default" : "secondary"}
-                      className="cursor-pointer"
-                      onClick={() => handleToggleUserStatus(user.id)}
-                    >
-                      {user.isActive ? t.userManagement.active : t.userManagement.inactive}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleViewUser(user)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleEditUser(user)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{t.userManagement.deleteUser}</AlertDialogTitle>
-                            <AlertDialogDescription>{t.userManagement.confirmDeleteUser}</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{t.userManagement.cancel}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteUser(user.id)}>
-                              {t.userManagement.delete}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t.userManagement.fullName}</TableHead>
+                  <TableHead>{t.userManagement.username}</TableHead>
+                  <TableHead>{t.userManagement.email}</TableHead>
+                  <TableHead>{t.userManagement.role}</TableHead>
+                  <TableHead>Rank</TableHead>
+                  <TableHead>{t.userManagement.department}</TableHead>
+                  <TableHead>{t.userManagement.status}</TableHead>
+                  <TableHead>{t.userManagement.actions}</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.fullName}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">
+                        {user.rank}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{user.department}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={user.isActive ? "default" : "secondary"}
+                        className="cursor-pointer"
+                        onClick={() => handleToggleUserStatus(user.id)}
+                      >
+                        {user.isActive ? t.userManagement.active : t.userManagement.inactive}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" onClick={() => handleViewUser(user)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleEditUser(user)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t.userManagement.deleteUser}</AlertDialogTitle>
+                              <AlertDialogDescription>{t.userManagement.confirmDeleteUser}</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t.userManagement.cancel}</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteUser(user.id)}>
+                                {t.userManagement.delete}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{t.userManagement.editUser}</DialogTitle>
           </DialogHeader>
@@ -356,6 +405,21 @@ export function UserManagement() {
                   {roles.map((role) => (
                     <SelectItem key={role} value={role}>
                       {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="editRank">Rank</Label>
+              <Select value={editUser.rank} onValueChange={(value) => setEditUser({ ...editUser, rank: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ranks.map((rank) => (
+                    <SelectItem key={rank} value={rank}>
+                      {rank}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -414,6 +478,12 @@ export function UserManagement() {
                 <div>
                   <Label className="text-sm font-medium text-gray-500">{t.userManagement.role}</Label>
                   <p className="text-sm">{selectedUser.role}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Rank</Label>
+                  <Badge variant="outline" className="text-xs">
+                    {selectedUser.rank}
+                  </Badge>
                 </div>
                 <div>
                   <Label className="text-sm font-medium text-gray-500">{t.userManagement.department}</Label>

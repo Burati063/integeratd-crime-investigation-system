@@ -67,9 +67,14 @@ export function Sidebar({ userRole }: SidebarProps) {
       case "investigator":
         return [
           ...commonItems.slice(0, 1),
-          { icon: ClipboardList, label: "My Cases", href: "/investigator/my-cases" },
+          {
+            icon: ClipboardList,
+            label: "My Cases",
+            href: "/investigator/my-cases",
+          },
+          { icon: FileText, label: "Reports", href: "/investigator/reports" },
           ...commonItems.slice(1),
-        ]
+        ];
       case "prosecutor":
         return [
           ...commonItems.slice(0, 1),
