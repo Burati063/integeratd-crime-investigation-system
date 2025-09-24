@@ -31,6 +31,7 @@ import {
   Send,
   CheckCircle,
 } from "lucide-react";
+import { FileUpload } from "@/components/investigator/FileUpload";
 
 interface Person {
   id: string;
@@ -52,6 +53,7 @@ interface Person {
   workStatus: string;
   phoneNumber: string;
   description?: string;
+  fileUrl?: string;
 }
 
 interface Exhibit {
@@ -62,6 +64,7 @@ interface Exhibit {
   registeredDate: string;
   relatedPersonId: string;
   relatedPersonName: string;
+  fileUrl?: string;
 }
 
 interface Case {
@@ -90,6 +93,8 @@ export default function MyCases() {
   const [submittedCase, setSubmittedCase] = useState<Case | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState("person");
+  const [personFile, setPersonFile] = useState<File | null>(null);
+  const [exhibitFile, setExhibitFile] = useState<File | null>(null);
 
   // Person form state
   const [personForm, setPersonForm] = useState({
@@ -1036,6 +1041,15 @@ export default function MyCases() {
                                     className="resize-none"
                                   />
                                 </div>
+                                <div className="flex ">
+                                  <FileUpload onFileSelect={setPersonFile} />
+                                  {personFile && (
+                                    <div className="text-xs text-green-700 mt-2">
+                                      Selected file: {personFile.name}
+                                    </div>
+                                  )}
+                                </div>
+
                                 <div className="sm:col-span-2 lg:col-span-2">
                                   <Button
                                     onClick={handleAddPerson}
@@ -1334,6 +1348,15 @@ export default function MyCases() {
                                     }))
                                   }
                                 />
+                                <div>
+                                  <FileUpload onFileSelect={setExhibitFile} />
+                                  {exhibitFile && (
+                                    <div className="text-xs text-green-700 mt-2">
+                                      Selected file: {exhibitFile.name}
+                                    </div>
+                                  )}
+                                </div>
+
                                 <Button
                                   onClick={handleAddExhibit}
                                   className="h-12 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white shadow-lg transition-all duration-200"
