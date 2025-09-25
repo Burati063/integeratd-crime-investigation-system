@@ -39,6 +39,7 @@ export function SignupForm() {
     // Handle signup logic here
     console.log("Signup data:", formData);
   };
+
   const ranks = [
     "Constable",
     "Assistant Sergeant",
@@ -57,8 +58,32 @@ export function SignupForm() {
     "Deputy Commissioner General",
     "Commissioner General",
   ];
+
+  const departments = [
+    {
+      value: "major-crime",
+      label: "Major Crime Division",
+    },
+    {
+      value: "specialized-crime",
+      label: "Specialized Crime Division", 
+    },
+    {
+      value: "financial-crime",
+      label: "Financial Crime Division",
+    },
+    {
+      value: "anti-corruption", 
+      label: "Anti-Corruption Division",
+    },
+    {
+      value: "technology-crime",
+      label: "Technology Crime Division",
+    }
+  ];
+
   return (
-    <Card className="bg-gradient-to-br from-slate-800 via-slate-900 to-slate-900 border-slate-700 shadow-xl">
+    <Card className="bg-gradient-to-br from-slate-800 via-slate-900 to-slate-900 border-slate-700 shadow-xl max-w-2xl mx-auto">
       <CardHeader className="text-center pb-8">
         <div className="flex justify-between items-start mb-6">
           <div></div>
@@ -120,7 +145,9 @@ export function SignupForm() {
               required
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          {/* Responsive grid layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="role" className="text-white">
                 {t("auth.role")}
@@ -130,7 +157,7 @@ export function SignupForm() {
                   setFormData({ ...formData, role: value })
                 }
               >
-                <SelectTrigger className="bg-white/90 border-slate-300 text-gray-900">
+                <SelectTrigger className="bg-white/90 border-slate-300 text-gray-900 w-full">
                   <SelectValue placeholder={t("auth.selectRole")} />
                 </SelectTrigger>
                 <SelectContent className="bg-white border-gray-200">
@@ -150,8 +177,34 @@ export function SignupForm() {
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="role" className="text-white">
+              <Label htmlFor="department" className="text-white">
+                Department
+              </Label>
+              <Select
+                onValueChange={(value) =>
+                  setFormData({ ...formData, department: value })
+                }
+              >
+                <SelectTrigger className="bg-white/90 border-slate-300 text-gray-900 w-full">
+                  <SelectValue placeholder="Select Department" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-gray-200 min-w-[300px]">
+                  {departments.map((dept) => (
+                    <SelectItem key={dept.value} value={dept.value} className="py-2">
+                      <div className="flex flex-col">
+                        <span className="font-medium">{dept.label}</span>
+                       
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="rank" className="text-white">
                 Rank
               </Label>
               <Select
@@ -159,10 +212,10 @@ export function SignupForm() {
                   setFormData({ ...formData, rank: value })
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="bg-white/90 border-slate-300 text-gray-900 w-full">
                   <SelectValue placeholder="Select Rank" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border-gray-200">
                   {ranks.map((rank) => (
                     <SelectItem key={rank} value={rank}>
                       {rank}
