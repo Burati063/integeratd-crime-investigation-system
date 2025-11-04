@@ -107,7 +107,7 @@ export function UserManagement() {
   ]
 
   const departments = [
-    "Administration",
+   
     "Major Crime Division",
     "Specialized Crime Division",
     "Financial Crime Division",

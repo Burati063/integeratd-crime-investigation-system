@@ -129,14 +129,7 @@ export function LoginForm(){
           </Button>
         </form>
 
-        <div className="text-center">
-          <span className="text-slate-300">{t("auth.dontHaveAccount").split("?")[0]}?  </span>
-          <Link href="/auth/signup">
-            <button className="text-white hover:text-slate-300 font-semibold">
-            {t("common.signup")}
-            </button>
-          </Link>
-        </div>
+       
       </CardContent>
     </Card>
   )

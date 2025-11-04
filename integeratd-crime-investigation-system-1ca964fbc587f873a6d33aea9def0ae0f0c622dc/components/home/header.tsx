@@ -87,13 +87,7 @@ export function Header() {
               <Button variant="secondary" asChild>
                 <Link href="/auth/login">{t("nav.login")}</Link>
               </Button>
-              <Button
-                variant="outline"
-                className="border-secondary text-secondary hover:bg-secondary hover:text-primary bg-transparent"
-                asChild
-              >
-                <Link href="/auth/signup">{t("nav.signup")}</Link>
-              </Button>
+            
             </div>
           </nav>
 
@@ -161,13 +155,7 @@ export function Header() {
                 <Button variant="secondary" asChild>
                   <Link href="/login">{t("nav.login")}</Link>
                 </Button>
-                <Button
-                  variant="outline"
-                  className="border-secondary text-secondary hover:bg-secondary hover:text-primary bg-transparent"
-                  asChild
-                >
-                  <Link href="/signup">{t("nav.signup")}</Link>
-                </Button>
+              
               </div>
             </div>
           </nav>
